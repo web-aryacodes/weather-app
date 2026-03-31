@@ -6,7 +6,7 @@
 }
 
 body {
-  background: #0f172a;
+  background: #709bff;
   color: white;
   height: 100vh;
   display: flex;
@@ -48,7 +48,7 @@ body {
 
 /* Weather Card */
 .weather-card {
-  background: #1e293b;
+  background: #30405a;
   padding: 20px;
   border-radius: 16px;
 }
