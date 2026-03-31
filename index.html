@@ -8,26 +8,69 @@
 </head>
 <body>
 
-  <div class="container">
+  <div class="app">
+        <!--left side-->
+    <div class="sidebar left">
 
-    <h1 class="app-title">Weather App</h1>
+      <div class="weather-box small" data-city="Mumbai">
+        <h3>Mumbai</h3>
+        <img class="side-icon" src="">
+        <p class="side-temp">--°C</p>
+      </div>
 
-    <!-- Search -->
-    <div class="search-box">
-      <input type="text" id="cityInput" placeholder="Enter city name">
-      <button id="searchBtn">Search</button>
+      <div class="weather-box small" data-city="Delhi">
+        <h3>Delhi</h3>
+        <img class="side-icon" src="">
+        <p class="side-temp">--°C</p>
+      </div>
+
+      <div class="weather-box small" data-city="Pune">
+        <h3>Pune</h3>
+        <img class="side-icon" src="">
+        <p class="side-temp">--°C</p>
+      </div>
+
     </div>
 
-    <!-- Weather Card -->
-    <div class="weather-card">
+    <div class="main">
 
-      <h2 id="cityName">Mumbai</h2>
+      <h1 class="app-title">Weather App</h1>
 
-      <img id="weatherIcon" src="" alt="Weather Icon">
+      <div class="search-box">
+        <input type="text" id="cityInput" placeholder="Search city">
+        <button id="searchBtn">Search</button>
+      </div>
 
-      <h1 id="temperature">--°C</h1>
+      <div class="weather-box big">
+        <h2 id="cityName">Mumbai</h2>
+        <img id="weatherIcon" src="">
+        <h1 id="temperature">--°C</h1>
+        <p id="description">--</p>
+      </div>
 
-      <p id="description">--</p>
+      <div class="extra-space"></div>
+
+    </div>
+        <!--right side-->
+    <div class="sidebar right">
+
+      <div class="weather-box small" data-city="London">
+        <h3>London</h3>
+        <img class="side-icon" src="">
+        <p class="side-temp">--°C</p>
+      </div>
+
+      <div class="weather-box small" data-city="Tokyo">
+        <h3>Tokyo</h3>
+        <img class="side-icon" src="">
+        <p class="side-temp">--°C</p>
+      </div>
+
+      <div class="weather-box small" data-city="New York">
+        <h3>New York</h3>
+        <img class="side-icon" src="">
+        <p class="side-temp">--°C</p>
+      </div>
 
     </div>
 
