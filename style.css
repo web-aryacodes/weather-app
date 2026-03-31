@@ -1,0 +1,67 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #0f172a;
+  color: white;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 320px;
+  text-align: center;
+}
+
+.app-title {
+  margin-bottom: 20px;
+}
+
+/* Search Box */
+.search-box {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+  border-radius: 8px 0 0 8px;
+}
+
+.search-box button {
+  padding: 10px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+  border-radius: 0 8px 8px 0;
+}
+
+/* Weather Card */
+.weather-card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.weather-card img {
+  width: 80px;
+  margin: 10px 0;
+}
+
+#temperature {
+  font-size: 40px;
+}
+
+#description {
+  opacity: 0.8;
+}
