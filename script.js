@@ -178,3 +178,12 @@ cityInput.addEventListener("keypress", (e) => {
 /* INIT */
 getWeather("Mumbai");
 renderSidebar();
+
+const centerCard = document.getElementById("centerCard");
+
+centerCard.addEventListener("click", (e) => {
+  // Prevent click on pin button from triggering modal
+  if (!e.target.classList.contains("pin-btn")) {
+    openModal(currentCity);
+  }
+});
