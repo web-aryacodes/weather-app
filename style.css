@@ -115,3 +115,48 @@ body {
   background: rgba(30, 41, 59, 0.5);
   border-radius: 10px;
 }
+
+.pin-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: red;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.weather-box {
+  position: relative;
+}
+
+.weather-box.empty {
+  opacity: 0.4;
+  border: 2px dashed #3b82f6;
+}
+
+.weather-box.empty::after {
+  content: "Empty";
+  display: block;
+  margin-top: 20px;
+  color: #aaa;
+}
+
+.side-desc {
+  font-size: 12px;
+  opacity: 0.7;
+}
