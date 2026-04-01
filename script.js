@@ -71,6 +71,8 @@ async function openModal(city) {
       return;
     }
 
+    modalContent.style.background = getWeatherBackground(data.list[0].weather[0].main);
+
     renderForecast(city, data.list);
 
   } catch {
@@ -187,3 +189,42 @@ centerCard.addEventListener("click", (e) => {
     openModal(currentCity);
   }
 });
+
+function getWeatherBackground(weather) {
+
+  // ☀️ Clear
+  if (weather === "Clear") {
+    return "linear-gradient(135deg, #4facfe, #00f2fe)";
+  }
+
+  // ☁️ Clouds
+  if (weather === "Clouds") {
+    return "linear-gradient(135deg, #757f9a, #d7dde8)";
+  }
+
+  // 🌧 Rain group
+  if (weather === "Rain" || weather === "Drizzle" || weather === "Thunderstorm") {
+    return "linear-gradient(135deg, #2c3e50, #4ca1af)";
+  }
+
+  // ❄️ Snow
+  if (weather === "Snow") {
+    return "linear-gradient(135deg, #83a4d4, #b6fbff)";
+  }
+
+  // 🌫 Fog / Mist group
+  if (
+    weather === "Mist" ||
+    weather === "Haze" ||
+    weather === "Fog" ||
+    weather === "Smoke" ||
+    weather === "Dust" ||
+    weather === "Sand" ||
+    weather === "Ash"
+  ) {
+    return "linear-gradient(135deg, #606c88, #3f4c6b)";
+  }
+
+  // Default
+  return "rgba(30, 41, 59, 0.7)";
+}
