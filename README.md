@@ -69,7 +69,7 @@ Tools like ChatGPT were used for guidance, debugging, and improving code quality
 
 ## 📸 Screenshot
 
-![Main Page ](<Screenshot-main.png>)
+![Main Page](Screenshot-main.png)
 ![Forecast Popup](Screenshot-forecast.png)
 ---
 
