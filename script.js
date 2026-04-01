@@ -57,23 +57,25 @@ async function getSideWeather(card, city) {
 async function openModal(city) {
   modal.classList.remove("hidden");
 
-  modalContent.innerHTML = `<h2>${city}</h2><p>Loading forecast...</p>`;
+  modalContent.innerHTML = `<p>Loading...</p>`;
 
   try {
-    const res = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`
-    );
+    const [currentRes, forecastRes] = await Promise.all([
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`),
+      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`)
+    ]);
 
-    const data = await res.json();
+    const currentData = await currentRes.json();
+    const forecastData = await forecastRes.json();
 
-    if (data.cod !== "200") {
-      modalContent.innerHTML = `<p>Error loading forecast</p>`;
+    if (currentData.cod !== 200 || forecastData.cod !== "200") {
+      modalContent.innerHTML = `<p>Error loading data</p>`;
       return;
     }
 
-    modalContent.style.background = getWeatherBackground(data.list[0].weather[0].main);
+    modalContent.style.background = getWeatherBackground(forecastData.list[0].weather[0].main);
 
-    renderForecast(city, data.list);
+    renderForecast(currentData, forecastData.list);
 
   } catch {
     modalContent.innerHTML = `<p>Error ❌</p>`;
@@ -81,23 +83,54 @@ async function openModal(city) {
 }
 
 /* RENDER FORECAST */
-function renderForecast(city, list) {
+function renderForecast(current, list) {
+
+  const now = new Date();
+
+  const fullDate = now.toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "short"
+  });
+
+  const time = now.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
   // every 8th item = 1 day
   const daily = list.filter((item, index) => index % 8 === 0);
 
-  let html = `<h2>${city}</h2><div class="forecast">`;
+  let html = `
+    <h2>${current.name}</h2>
+
+    <div class="today-card">
+  <div class="today-left">
+    <img src="https://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png">
+    <h1>${Math.round(current.main.temp)}°C</h1>
+    <p>${current.weather[0].description}</p>
+  </div>
+
+  <div class="today-right">
+    <h3>${fullDate}</h3>
+    <h2>${time}</h2>
+  </div>
+</div>
+    <div class="forecast">
+  `;
 
   daily.slice(0, 5).forEach(day => {
 
     const date = new Date(day.dt_txt);
-    const dayName = date.toLocaleDateString("en-US", {
-      weekday: "short"
+
+    const shortDate = date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short"
     });
 
     html += `
       <div class="forecast-card">
-        <p>${dayName}</p>
+        <p>${shortDate}</p>
         <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png">
         <p>${Math.round(day.main.temp)}°C</p>
         <p class="desc">${day.weather[0].description}</p>
@@ -109,7 +142,6 @@ function renderForecast(city, list) {
 
   modalContent.innerHTML = html;
 }
-
 /* MODAL CLOSE */
 modal.addEventListener("click", (e) => {
   if (e.target === modal) modal.classList.add("hidden");
@@ -191,27 +223,22 @@ centerCard.addEventListener("click", (e) => {
 });
 
 function getWeatherBackground(weather) {
-
   // ☀️ Clear
   if (weather === "Clear") {
     return "linear-gradient(135deg, #4facfe, #00f2fe)";
   }
-
   // ☁️ Clouds
   if (weather === "Clouds") {
     return "linear-gradient(135deg, #757f9a, #d7dde8)";
   }
-
   // 🌧 Rain group
   if (weather === "Rain" || weather === "Drizzle" || weather === "Thunderstorm") {
     return "linear-gradient(135deg, #2c3e50, #4ca1af)";
   }
-
   // ❄️ Snow
   if (weather === "Snow") {
     return "linear-gradient(135deg, #83a4d4, #b6fbff)";
   }
-
   // 🌫 Fog / Mist group
   if (
     weather === "Mist" ||
