@@ -56,6 +56,9 @@ async function getSideWeather(card, city) {
 /* MODAL + FORECAST */
 async function openModal(city) {
   modal.classList.remove("hidden");
+  setTimeout(() => {
+    modal.classList.add("show");
+  }, 10);
 
   modalContent.innerHTML = `<p>Loading...</p>`;
 
@@ -142,9 +145,15 @@ function renderForecast(current, list) {
 
   modalContent.innerHTML = html;
 }
+
 /* MODAL CLOSE */
 modal.addEventListener("click", (e) => {
-  if (e.target === modal) modal.classList.add("hidden");
+  if (e.target === modal) {
+    modal.classList.remove("show");
+    setTimeout(() => {
+      modal.classList.add("hidden");
+    }, 300);
+  }
 });
 
 /* SIDEBAR */
