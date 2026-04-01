@@ -9,37 +9,28 @@ const temperature = document.getElementById("temperature");
 const description = document.getElementById("description");
 const weatherIcon = document.getElementById("weatherIcon");
 
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modalContent");
+
 let currentCity = "Mumbai";
 let pinnedCities = JSON.parse(localStorage.getItem("cities")) || [];
 
-/* CENTER WEATHER */
+/* CENTER */
 async function getWeather(city) {
-  try {
-    cityName.innerText = "Loading...";
-    temperature.innerText = "--°C";
-    description.innerText = "";
+  const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
+  const data = await res.json();
 
-    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
-    const data = await res.json();
+  if (data.cod !== 200) return;
 
-    if (data.cod !== 200) {
-      cityName.innerText = "City not found ❌";
-      return;
-    }
+  currentCity = data.name;
 
-    currentCity = data.name;
-
-    cityName.innerText = data.name;
-    temperature.innerText = `${Math.round(data.main.temp)}°C`;
-    description.innerText = data.weather[0].description;
-    weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-
-  } catch {
-    cityName.innerText = "Error ❌";
-  }
+  cityName.innerText = data.name;
+  temperature.innerText = `${Math.round(data.main.temp)}°C`;
+  description.innerText = data.weather[0].description;
+  weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
 }
 
-/* SIDE WEATHER */
+/* SIDE */
 async function getSideWeather(card, city) {
   const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
   const data = await res.json();
@@ -51,7 +42,17 @@ async function getSideWeather(card, city) {
   card.querySelector(".side-desc").innerText = data.weather[0].description;
 }
 
-/* RENDER SIDEBAR */
+/* MODAL */
+function openModal(city) {
+  modal.classList.remove("hidden");
+  modalContent.innerHTML = `<h2>${city}</h2><p>Loading forecast...</p>`;
+}
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) modal.classList.add("hidden");
+});
+
+/* RENDER */
 function renderSidebar() {
   const slots = document.querySelectorAll(".weather-box.small");
 
@@ -76,6 +77,12 @@ function renderSidebar() {
         save();
       };
 
+      card.onclick = (e) => {
+        if (!e.target.classList.contains("remove-btn")) {
+          openModal(city);
+        }
+      };
+
     } else {
       card.classList.add("empty");
       card.innerHTML = "";
@@ -98,10 +105,7 @@ pinBtn.onclick = () => {
 };
 
 /* SEARCH */
-searchBtn.onclick = () => {
-  getWeather(cityInput.value);
-};
-
+searchBtn.onclick = () => getWeather(cityInput.value);
 cityInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") getWeather(cityInput.value);
 });
