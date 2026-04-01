@@ -187,3 +187,32 @@ body {
   background: rgba(30, 41, 59, 0.9);
   backdrop-filter: blur(10px);
 }
+
+.forecast {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.forecast-card {
+  flex: 1;
+  background: rgba(30, 41, 59, 0.7);
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.forecast-card:hover {
+  transform: scale(1.05);
+}
+
+.forecast-card img {
+  width: 40px;
+}
+
+.forecast-card .desc {
+  font-size: 12px;
+  opacity: 0.7;
+}

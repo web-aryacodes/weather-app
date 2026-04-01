@@ -17,42 +17,103 @@ let pinnedCities = JSON.parse(localStorage.getItem("cities")) || [];
 
 /* CENTER */
 async function getWeather(city) {
-  const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
-  const data = await res.json();
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
+    );
+    const data = await res.json();
 
-  if (data.cod !== 200) return;
+    if (data.cod !== 200) return;
 
-  currentCity = data.name;
+    currentCity = data.name;
 
-  cityName.innerText = data.name;
-  temperature.innerText = `${Math.round(data.main.temp)}°C`;
-  description.innerText = data.weather[0].description;
-  weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+    cityName.innerText = data.name;
+    temperature.innerText = `${Math.round(data.main.temp)}°C`;
+    description.innerText = data.weather[0].description;
+    weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+  } catch {
+    cityName.innerText = "Error ❌";
+  }
 }
 
-/* SIDE */
+/* SIDEBAR */
 async function getSideWeather(card, city) {
-  const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
+  );
   const data = await res.json();
 
   if (data.cod !== 200) return;
 
   card.querySelector(".side-temp").innerText = `${Math.round(data.main.temp)}°C`;
-  card.querySelector(".side-icon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
-  card.querySelector(".side-desc").innerText = data.weather[0].description;
+  card.querySelector(".side-icon").src =
+    `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+  card.querySelector(".side-desc").innerText =
+    data.weather[0].description;
 }
 
-/* MODAL */
-function openModal(city) {
+/* MODAL + FORECAST */
+async function openModal(city) {
   modal.classList.remove("hidden");
+
   modalContent.innerHTML = `<h2>${city}</h2><p>Loading forecast...</p>`;
+
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`
+    );
+
+    const data = await res.json();
+
+    if (data.cod !== "200") {
+      modalContent.innerHTML = `<p>Error loading forecast</p>`;
+      return;
+    }
+
+    renderForecast(city, data.list);
+
+  } catch {
+    modalContent.innerHTML = `<p>Error ❌</p>`;
+  }
 }
 
+/* RENDER FORECAST */
+function renderForecast(city, list) {
+
+  // every 8th item = 1 day
+  const daily = list.filter((item, index) => index % 8 === 0);
+
+  let html = `<h2>${city}</h2><div class="forecast">`;
+
+  daily.slice(0, 5).forEach(day => {
+
+    const date = new Date(day.dt_txt);
+    const dayName = date.toLocaleDateString("en-US", {
+      weekday: "short"
+    });
+
+    html += `
+      <div class="forecast-card">
+        <p>${dayName}</p>
+        <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png">
+        <p>${Math.round(day.main.temp)}°C</p>
+        <p class="desc">${day.weather[0].description}</p>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  modalContent.innerHTML = html;
+}
+
+/* MODAL CLOSE */
 modal.addEventListener("click", (e) => {
   if (e.target === modal) modal.classList.add("hidden");
 });
 
-/* RENDER */
+/* SIDEBAR */
 function renderSidebar() {
   const slots = document.querySelectorAll(".weather-box.small");
 
@@ -98,7 +159,10 @@ function save() {
 
 /* PIN */
 pinBtn.onclick = () => {
-  if (!pinnedCities.includes(currentCity) && pinnedCities.length < 6) {
+  if (
+    !pinnedCities.includes(currentCity) &&
+    pinnedCities.length < 6
+  ) {
     pinnedCities.push(currentCity);
     save();
   }
@@ -106,6 +170,7 @@ pinBtn.onclick = () => {
 
 /* SEARCH */
 searchBtn.onclick = () => getWeather(cityInput.value);
+
 cityInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") getWeather(cityInput.value);
 });
